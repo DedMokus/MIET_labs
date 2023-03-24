@@ -1,0 +1,255 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <clocale>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#define PATH "data.txt"
+
+#define max_size 250
+using namespace std;
+
+//struct dateed
+//{
+//	int day;
+//	char month[20];
+//	int year;
+//};
+
+struct deposid
+{
+	int nomer;
+	char fio[30];
+	double money;
+	//dateed date;
+};
+
+int kolMass(int mass[max_size])
+{
+	int kol = 0;
+	for (int i = 0; i < max_size; i++)
+		if (mass[i] != 0) kol++;
+	return kol;
+}
+
+//void init_date(deposid* depo)
+//{
+//	char buff[100];
+//	int len;
+//	cout << "Введите день" << endl;;
+//	cin >> depo->date.day;
+//	cout << "Введите месяц" << endl;
+//	cin.get(); cin.getline(buff, 20);
+//	//len = strlen(buff) + 1;
+//	//depo->date.month = new char(len);
+//	memcpy(depo->date.month, buff, 20);
+//	cout << "Введите год" << endl;
+//	cin >> depo->date.year;
+//
+//}
+
+void BubbleSortStruct(deposid depo[], int* size)
+{
+	deposid temp;
+	int i, j;
+
+	for (i = 0; i < *size; i++)
+		for (j = *size - 1; j > i; j--)
+		{
+			{
+				if (depo[j - 1].fio[0] > depo[j].fio[0])
+				{
+					temp = depo[j - 1]; depo[j - 1] = depo[j]; depo[j] = temp;
+				}
+			}
+		}
+}
+
+void init_depo(deposid* depo, int size, int* size_now)
+{
+	deposid* tw;
+	for (tw = depo + *size_now; tw < depo + size + *size_now; tw++)
+	{
+		cout << "Введите номер счета" << endl; cin >> tw->nomer; cin.get();
+		cout << "Введите имя и фамилию" << endl; cin.getline(tw->fio, 30);
+		cout << "Введите сумму " << endl; cin >> tw->money;
+		//init_date(tw);
+		system("cls");
+	}
+	*size_now = *size_now + size;
+}
+
+void print_depo(deposid* depo, int* size_now)
+{
+	deposid* tw; system("cls");
+	cout << setw(15) << left << "Номер счета" << setw(25) << "Имя и Фамилия" << setw(15) << "Денег на счете"  << endl;
+	cout << "________________________________________________________________________________________________________________" << endl;
+	for (tw = depo; tw < depo + *size_now; tw++)
+	{
+		cout << setw(15) << left << tw->nomer << setw(25) << tw->fio << setw(15) << tw->money << setw(20) << endl;
+	}
+	system("pause");
+
+}
+
+void summ_depo(deposid* depo, int* size_now)
+{
+	deposid* tw;
+	int summ;
+	cout << "Введите искомую сумму " << endl; cin >> summ; system("cls");
+	cout << setw(15) << left << "Номер счета" << setw(25) << "Имя и Фамилия" << setw(15) << "Денег на счете" << endl;
+	cout << "________________________________________________________________________________________________________________" << endl;
+	for (tw = depo; tw < depo + *size_now; tw++)
+	{
+		if (tw->money >= summ)
+		{
+			cout << setw(15) << left << tw->nomer << setw(25) << tw->fio << setw(15) << tw->money << setw(20) << endl;
+		}
+	}
+	system("pause");
+}
+
+void fio_search(deposid* depo, int* size_now)
+{
+	deposid* tw;
+	char name[100];
+	cout << "Введите имя и фамилию" << endl; cin.getline(name, 100);
+	int cheta[max_size]{ 0 };
+	int scet = 0;
+	for (tw = depo; tw < depo + *size_now; tw++)
+	{
+		if (strcmp(name, tw->fio) == 0)
+		{
+			cheta[scet] = tw->nomer;
+			scet++;
+		}
+	}
+	scet = kolMass(cheta);
+	if (scet != 0)
+	{
+		cout << "Номера счетов: " << endl;
+		for (int i = 0; i < scet; i++)
+		{
+			cout << cheta[i] << '\t';
+		}
+	}
+	cout << '\n';
+	system("pause");
+}
+
+void file_read(int* size_now, deposid* buff)
+{
+	ifstream fin;
+	fin.open(PATH);
+	int size_read = 0;
+	int scet = 0;
+	while (!fin.eof())
+	{
+		fin.read((char*)(buff + scet), sizeof(deposid));
+		size_read++; scet++;
+	}
+	*size_now = *size_now + size_read - 1;
+	fin.close();
+}
+
+void file_write(deposid* buff, int* size_now)
+{
+	ofstream fout;
+	fout.open(PATH);
+	deposid* tw = buff;
+	int scet = 0;
+	while (scet != *size_now)
+	{
+		fout.write((char*)tw, sizeof(deposid));
+		scet++; tw++;
+	}
+
+	fout.close();
+}
+
+int main()
+{
+	setlocale(0, "Russian");
+
+	ofstream fout;
+	ifstream fin;
+	fin.open(PATH);
+	int n, sw;
+	char buff[100];
+	int* size_now1 = new int[1];
+	*size_now1 = 0;
+	deposid* depo;
+	depo = new deposid[max_size];
+	memset(depo, 0, sizeof(depo));
+	if (!fin.is_open())
+	{
+		cout << "Файла нет, инициализация с клавиатуры" << endl;
+		cout << "Введите кол - во счетов" << endl;
+		cin >> n;
+		system("cls");
+		init_depo(depo, n, size_now1);
+		//*size_now1 += n;
+	}
+	else
+	{
+		fin.close();
+		cout << "Считывание из файла" << endl;
+		file_read(size_now1, depo);
+
+	}
+	fin.close();
+	system("cls");
+	do
+	{
+		system("cls");
+		cout << "База данных (Счета)" << endl;
+		cout << "Добавить новый элемент ............... 1" << endl;
+		cout << "Распечатать в табличном виде ......... 2" << endl;
+		cout << "Определить счета с суммой больше N ... 3" << endl;
+		cout << "Поиск по имени и фамилии ............. 4" << endl;
+		cout << "Сортировать по алфавиту и вывести .....5" << endl;
+		cout << "Выход ................................ 6" << endl;
+
+		(cin >> sw).get();
+		system("cls");
+
+
+		switch (sw)
+		{
+		case 1:
+		{
+			init_depo(depo, 1, size_now1);
+			break;
+		}
+		case 2:
+		{
+			print_depo(depo, size_now1);
+
+			break;
+		}
+		case 3:
+		{
+			summ_depo(depo, size_now1);
+			break;
+		}
+		case 4:
+		{
+			fio_search(depo, size_now1);
+			break;
+		}
+		case 5:
+		{
+			BubbleSortStruct(depo, size_now1);
+			print_depo(depo, size_now1);
+			break;
+		}
+		default:
+			break;
+		}
+	} while (sw != 6);
+	cout << "Запись в файл" << endl;
+
+	file_write(depo, size_now1);
+};

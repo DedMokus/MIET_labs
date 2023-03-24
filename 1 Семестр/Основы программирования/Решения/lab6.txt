@@ -1,0 +1,132 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <clocale>
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+#include <vector>
+
+using namespace std;
+
+struct deposid
+	{
+		int nomer;
+		char* last_name;
+		char* first_name;
+		double money;
+	};
+
+
+void clear()
+{
+    for (int i = 0;i<30;i++) cout << '\n';
+}
+
+void sum3(int n, deposid* depo)
+{
+            int sum;
+			cout << "Введите сумму" << endl; cin >> sum; cin.get();
+			//system("cls");
+			clear();
+			cout << setw(11) << left << "Номер счета" << setw(15) << "Фамилия" << setw(15) << "Имя" << setw(10) << "Денег на счете" << endl;
+			cout << "--------------------------------------------------------------------------------" << endl; ;
+			for (int i = 0; i < n; i++)
+			{
+				if ((depo[i].nomer != 0) && (depo[i].money > sum)) cout << setw(11) << left << depo[i].nomer << setw(15) << depo[i].last_name << setw(15) << depo[i].first_name << setw(10) << depo[i].money << endl;
+			}
+			//system("pause");
+			cin.get();
+}
+
+int main()
+{
+	setlocale(0, "Russian");
+	
+	int n,sw,lastnomer=0;
+	char buff[100];
+	cout << "Введите кол - во счетов" << endl;
+	cin >> n;
+
+	deposid* depo;
+	depo = new deposid[n];
+	memset(depo,0,sizeof(depo));
+	//system("cls");
+	clear();
+
+	do
+	{
+		//system("cls");
+		clear();
+		cout << "База данных (Счета)" << endl;
+		cout << "Добавить новый элемент ............... 1" << endl;
+		cout << "Распечатать в табличном виде ......... 2" << endl;
+		cout << "Определить счета с суммой больше N ... 3" << endl;
+		cout << "Поиск по имени и фамилии ............. 4" << endl;
+		cout << "Выход ................................ 5" << endl;
+
+		(cin >> sw).get();
+		//system("cls");
+		clear();
+
+		
+
+		switch (sw)
+		{
+		case 1:
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (depo[i].nomer == 0)
+				{
+					depo[i].nomer = i + 1;
+					cout << "Счет номер " << depo[i].nomer << endl;
+					cout << "Введите Имя" << endl; cin >> buff;
+					depo[i].first_name = new char[strlen(buff) + 1]; strcpy(depo[i].first_name, buff);
+					cout << "Введите фамилию" << endl; cin >> buff;
+					depo[i].last_name = new char[strlen(buff) + 1]; strcpy(depo[i].last_name, buff);
+					cout << "Введите сумму на счете" << endl; cin >> depo[i].money;
+					lastnomer+=1;
+					break;
+				}
+			}
+			break;
+		}
+		case 2:
+		{
+			cout << setw(11) << left << "Номер счета" << setw(15) << "Фамилия" << setw(15) << "Имя" << setw(10) << "Денег на счете" << endl;
+			cout << "--------------------------------------------------------------------------------" << endl; ;
+			for (int i = 0; i < n; i++)
+			{
+				if (depo[i].nomer != 0) cout << setw(11) << left << depo[i].nomer << setw(15) << depo[i].last_name << setw(15) << depo[i].first_name << setw(10) << depo[i].money << endl;
+			}
+			//system("pause");
+			cin.get();
+			break;
+		}
+		case 3:
+		{
+			sum3(n,depo);
+			break;
+		}
+		case 4:
+		{
+			char fam[200],im[200];
+			cout << "Введите фамилию" << endl; cin >>fam;
+            cout << "Введите имя" << endl; cin >> im;
+			cout << "Номера счетов:" << '\t';
+
+			for (int i = 0; i < lastnomer; i++)
+			{
+                if (strcmp(im,depo[i].first_name)==0 && strcmp(fam,depo[i].last_name)==0) cout << depo[i].nomer << ' ';
+			}
+			cout << endl;
+			//system("pause");
+			cin.get(); cin.get();
+		}
+		default:
+			break;
+		}
+	} while (sw != 5);
+}

@@ -1,0 +1,227 @@
+// Labs.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+//
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <clocale>
+#include <iostream>
+#include <cstdlib>
+
+/*using namespace std;*/
+
+void massinit(double *p, int n)
+{
+    double* tp;
+    for (tp = p; tp < (p + n); tp++) *tp = ((double)rand() / ((double)rand() + 0.1));
+
+}
+
+void printMatrix(int** matrix, int size1) {
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size1; j++) {
+            printf("%d \t", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void initMatrix(int** matrix, int size1) {
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size1; j++) {
+            matrix[i][j] = rand()%100;
+        }
+    }
+}
+
+void nulMatrix(int** matrix, int size1) {
+    int nul = 0, pol = 0;
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size1; j++) {
+            if ((((i + j <= size1 - 1) && (j >= i)) && (*(*(matrix+i)+j)) == 0)) nul = nul + 1;
+            if ((((i + j >= size1 - 1) && (j <= i)) && (*(*(matrix+i)+j)) > 0)) pol = pol + 1;
+        }
+    }
+    std::cout << "Int == 0:" << '\t' << nul << '\t' << "Int > 0:" << '\t' << pol << '\t';
+}
+
+/*void polMatrix(int** matrix, int size1) {
+    int col = 0;
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size1; j++) {
+            if ((((i + j >= size1 - 1) && (j <= i)) && (*(*(matrix+i)+j)) > 0)) col = col + 1;
+        }
+    }
+    std::cout << "Int > 0:" << '\t' << col << '\t';*/
+
+
+double* maxmass(double *p, int n)
+{
+    double* tp; double* tmax;
+    for (tmax = tp = p; tp < (p + n); tp++)
+    {
+        if (*tmax < *tp) *tmax = *tp;
+    }
+    std::cout << *tmax << '\t';
+    return tmax;
+}
+
+void printmass(double* p, int n)
+{
+    std::cout.precision(3);
+    for (int i = 0; i < n; i++) std::cout << p[i] << '\t';
+    std::cout << '\n';
+}
+
+void massum(double *p1,double *p01, int n1, double *p2, double *p02, int n2)
+{
+    double* tp1, * tp2;
+    double sum1, sum2;
+    for (sum1 = 0,tp1 = p1; tp1 <= (p01 + n1 -1); tp1++)
+    {
+        sum1 = sum1 + *tp1;
+        //std::cout << sum1 << '\t';
+    }
+    //std::cout << '\n';
+    for (sum2 = 0, tp2 = p2; tp2 <= (p02 + n2 -1); tp2++)
+    {
+        sum2 = sum2 + *tp2;
+        //std::cout << sum2 << '\t';
+    }
+    //std::cout << '\n';
+    //std::cout << '\n' << sum1 << '\t' << sum2 << std::endl;
+    if (sum1 > sum2)
+    {
+        std::cout << "Sum 1 > Sum 2";
+    }
+    else if (sum1 == sum2)
+    {
+        std::cout << "Sum1 = Sum2";
+    }
+    else std::cout << "Sum2 > Sum1";
+}
+
+void proverka1(int matrix[9][9], int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            matrix[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (((i + j <= N - 1) && (j >= i))) matrix[i][j] = 1;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%d \t", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void proverka2(int matrix[9][9], int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            matrix[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (((i + j >= N - 1) && (j <= i))) matrix[i][j] = 1;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%d \t", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    char s;
+
+    do
+    {
+        std::cout << "Select task" << std::endl;
+
+        int num;
+        std::cin >> num;
+
+        switch (num)
+        {
+        case 1:
+        {
+            time_t k;
+            srand(time(&k));
+
+            int const N1 = 10; int const N2 = 10;
+            double A1[N1], A2[N2];
+            massinit(A1, N1);
+            massinit(A2, N2);
+
+            printmass(A1, N1);
+            printmass(A2, N2);
+
+
+            double* max1 = maxmass(A1, N1);
+            double* max2 = maxmass(A2, N2);
+
+            massum(max1, A1, N1, max2, A2, N2);
+
+            break;
+        }
+        case 2:
+        {
+            int const N = 10;
+            int ** Matr;
+            int i, j;
+
+            //std::cin >> N;
+
+            Matr = (int**)malloc(sizeof(int[N]) * N);
+
+            for (i = 0; i < N; i++)
+            {
+                Matr[i] = (int*)malloc(sizeof(int[N]) * N);
+                for (j = 0; j < N; j++)
+                {
+                    Matr[i][j] = (rand() % 100);
+                }
+            }
+
+            initMatrix(Matr, N);
+            printMatrix(Matr, N);
+            //polMatrix(Matr, N);
+            nulMatrix(Matr, N);
+
+            break;
+        }
+        case 3:
+        {
+            int mat[9][9];
+            proverka1(mat, 9); std::cout << '\n';
+            proverka2(mat, 9);
+            break;
+        }
+        }
+
+        std::cout << '\n' << "Continue? (y/n) : ";
+        std::cin >> s;
+        std::cout << "=======================================" << std::endl;
+    } while (s == 'y');
+}
+
+// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
+// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+
+// Советы по началу работы 
+//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
+//   2. В окне Team Explorer можно подключиться к системе управления версиями.
+//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
+//   4. В окне "Список ошибок" можно просматривать ошибки.
+//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
+//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
